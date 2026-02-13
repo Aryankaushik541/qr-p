@@ -83,7 +83,7 @@ const FeedbackSurvey = () => {
 
         <div className="contact-info">
           <div>300 I-20, Marshall, TX</div>
-          <div>+1 923-471-8277</div>
+          <div>+1 903-471-8277</div>
           <div>https://xpressinnmarshall.com</div>
         </div>
 

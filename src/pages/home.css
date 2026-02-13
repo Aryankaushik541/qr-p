@@ -10,7 +10,7 @@
 
 
 .feedback-card {
-    background-color: #7b160d;
+    background-color: #000000;
     text-align: center;
     color: white;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.9);
@@ -145,11 +145,11 @@
 
 .qr-code {
     background: white;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    width: 220px;
-    height: 220px;
+    padding: 0px;
+    border-radius: 5px;
+    box-shadow: 0 0px 12px rgba(0, 0, 0, 0.2);
+    width: 200px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -157,7 +157,7 @@
 
 .qr-image {
     display: block;
-    border-radius: 8px;
+    border-radius: 15px;
     width: 200px;
     height: 200px;
     object-fit: contain;

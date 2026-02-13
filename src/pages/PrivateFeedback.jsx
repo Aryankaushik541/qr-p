@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const PrivateFeedback = () => {
   const navigate = useNavigate();
@@ -8,9 +9,10 @@ const PrivateFeedback = () => {
     email: '',
     contact: '',
     message: '',
-    feedback: '',
     rating: 0
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,6 +20,8 @@ const PrivateFeedback = () => {
       ...prev,
       [name]: value
     }));
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
   const handleRating = (star) => {
@@ -27,29 +31,57 @@ const PrivateFeedback = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Validation
     if (!formData.name.trim()) {
-      alert('Please enter your name');
+      setError('Please enter your name');
       return;
     }
     if (!formData.email.trim()) {
-      alert('Please enter your email');
+      setError('Please enter your email');
+      return;
+    }
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
       return;
     }
     if (!formData.contact.trim()) {
-      alert('Please enter your contact number');
+      setError('Please enter your contact number');
       return;
     }
-    if (!formData.message.trim() && !formData.feedback.trim()) {
-      alert('Please enter your message or feedback');
+    if (!formData.message.trim()) {
+      setError('Please enter your message');
       return;
     }
 
-    // Here you can save to database
-    console.log('Form Data:', formData);
-    
-    alert('Thank you for your feedback! We will work on improving.');
-    navigate('/');
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/feedback', {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        contact: formData.contact.trim(),
+        message: formData.message.trim(),
+        rating: formData.rating,
+        feedbackType: 'sad'
+      });
+
+      if (response.data.success) {
+        alert('Thank you for your feedback! We will work on improving.');
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Error submitting feedback:', err);
+      setError(
+        err.response?.data?.message ||
+        'Failed to submit feedback. Please try again later.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,7 +101,7 @@ const PrivateFeedback = () => {
         width: '100%',
         boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
       }}>
-        
+
         {/* Sad Icon */}
         <div style={{
           textAlign: 'center',
@@ -82,90 +114,143 @@ const PrivateFeedback = () => {
         <h2 style={{ textAlign: 'center', color: '#2c3e50', marginBottom: '10px' }}>
           We're sorry to hear that!
         </h2>
-        
+
         <p style={{ textAlign: 'center', color: '#7f8c8d', marginBottom: '30px' }}>
           Your feedback helps us improve. Please tell us what went wrong.
         </p>
 
+        {/* Error Message */}
+        {error && (
+          <div style={{
+            background: '#fee',
+            color: '#c33',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            border: '1px solid #fcc',
+            fontSize: '14px',
+            textAlign: 'center'
+          }}>
+            ⚠️ {error}
+          </div>
+        )}
+
         {/* Name Input */}
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
+          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#2c3e50' }}>
             Name *
           </label>
-          <input 
+          <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="Enter your name"
+            disabled={loading}
             style={{
               width: '100%',
               padding: '10px',
               border: '2px solid #ddd',
               borderRadius: '8px',
               fontSize: '14px',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              opacity: loading ? 0.6 : 1,
+              cursor: loading ? 'not-allowed' : 'text'
             }}
           />
         </div>
 
         {/* Email Input */}
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
+          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#2c3e50' }}>
             Email *
           </label>
-          <input 
+          <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Enter your email"
+            disabled={loading}
             style={{
               width: '100%',
               padding: '10px',
               border: '2px solid #ddd',
               borderRadius: '8px',
               fontSize: '14px',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              opacity: loading ? 0.6 : 1,
+              cursor: loading ? 'not-allowed' : 'text'
             }}
           />
         </div>
 
         {/* Contact No Input */}
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
+          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#2c3e50' }}>
             Contact No *
           </label>
-          <input 
+          <input
             type="tel"
             name="contact"
             value={formData.contact}
             onChange={handleChange}
             placeholder="Enter your contact number"
+            disabled={loading}
             style={{
               width: '100%',
               padding: '10px',
               border: '2px solid #ddd',
               borderRadius: '8px',
               fontSize: '14px',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              opacity: loading ? 0.6 : 1,
+              cursor: loading ? 'not-allowed' : 'text'
             }}
           />
         </div>
 
         {/* Star Rating */}
-       
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#2c3e50', textAlign: 'center' }}>
+            Rating (Optional)
+          </label>
+          <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span
+                key={star}
+                onClick={() => !loading && handleRating(star)}
+                style={{
+                  fontSize: '30px',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  color: star <= formData.rating ? '#f39c12' : '#ddd',
+                  transition: 'color 0.2s',
+                  opacity: loading ? 0.6 : 1,
+                  userSelect: 'none'
+                }}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+          {formData.rating > 0 && (
+            <p style={{ textAlign: 'center', color: '#7f8c8d', fontSize: '12px', marginTop: '5px' }}>
+              You rated: {formData.rating} star{formData.rating > 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
 
         {/* Message Textarea */}
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
+          <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#2c3e50' }}>
             Message *
           </label>
-          <textarea 
+          <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
             placeholder="Please describe your experience..."
+            disabled={loading}
             style={{
               width: '100%',
               height: '100px',
@@ -174,38 +259,43 @@ const PrivateFeedback = () => {
               borderRadius: '8px',
               fontSize: '14px',
               resize: 'vertical',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              opacity: loading ? 0.6 : 1,
+              cursor: loading ? 'not-allowed' : 'text',
+              fontFamily: 'inherit'
             }}
           />
         </div>
 
-        
-
         {/* Submit Button */}
-        <button 
+        <button
           onClick={handleSubmit}
+          disabled={loading}
           style={{
             width: '100%',
             padding: '15px',
-            background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+            background: loading
+              ? '#95a5a6'
+              : 'linear-gradient(135deg, #e74c3c, #c0392b)',
             color: 'white',
             border: 'none',
             borderRadius: '25px',
             fontSize: '16px',
             fontWeight: 'bold',
-            cursor: 'pointer',
+            cursor: loading ? 'not-allowed' : 'pointer',
             marginBottom: '20px',
-            transition: 'transform 0.2s ease'
+            transition: 'transform 0.2s ease',
+            opacity: loading ? 0.7 : 1
           }}
-          onMouseOver={(e) => e.target.style.transform = 'scale(1.02)'}
+          onMouseOver={(e) => !loading && (e.target.style.transform = 'scale(1.02)')}
           onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
         >
-          Submit
+          {loading ? '⏳ Submitting...' : 'Submit Feedback'}
         </button>
 
-        <div style={{ 
-          textAlign: 'center', 
-          fontSize: '12px', 
+        <div style={{
+          textAlign: 'center',
+          fontSize: '12px',
           color: '#27ae60',
           background: '#d5f4e6',
           padding: '10px',
@@ -215,8 +305,8 @@ const PrivateFeedback = () => {
           🔒 Your feedback is private and will only be seen by our management team.
         </div>
 
-        <div style={{ textAlign: 'center', fontSize: '12px',  }}>
-          Powered by <span style={{ color: '#e74c3c' }}>Xpress Inn</span>
+        <div style={{ textAlign: 'center', fontSize: '12px', color: '#7f8c8d' }}>
+          Powered by <span style={{ color: '#e74c3c', fontWeight: 'bold' }}>Xpress Inn</span>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './home.css';
 import { FaHandPointUp } from "react-icons/fa";
 import image from '../assest/URL QR Code.jpg'
-
+import image1 from '../assest/logo.jpg'
 export default function Home() {
     const navigate = useNavigate();
     const [showScanner, setShowScanner] = useState(false);
@@ -43,8 +43,8 @@ export default function Home() {
                 <div className="card-body">
                     <div className="logo-section">
                         <img 
-                            style={{height:"200px", width:"200px"}}
-                            src="https://xpressinnmarshall.com/wp-content/uploads/2023/09/xpressinn-main-sign.png" 
+                            style={{height:"170px", width:"170px",paddingTop:"20px"}}
+                            src={image1} 
                             alt="Xpress Inn Logo" 
                         />
                     </div>

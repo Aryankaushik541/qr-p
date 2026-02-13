@@ -172,7 +172,7 @@ import { FaHandPointDown } from "react-icons/fa";const ReviewRedirect = () => {
         
         {/* Footer */}
         <div className="contact-info">
-          <div>300 / 20 • +19234718277</div>
+          <div>300 / 20 • +1 903-471-8277</div>
           <div>https://xpressinnmarshall.com/</div>
         </div>
         
