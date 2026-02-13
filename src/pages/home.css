@@ -1,0 +1,244 @@
+/* home.css */
+.feedback-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1px;
+    font-family: 'Arial', sans-serif;
+}
+
+
+.feedback-card {
+    background-color: #7b160d;
+    text-align: center;
+    color: white;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.9);
+    max-width: 400px;
+    width: 100%;
+    border: 10px solid white;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.logo-text {
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    position: relative;
+}
+
+.logo-x {
+    color: #e74c3c;
+    position: relative;
+}
+
+.logo-x::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 25px;
+    height: 3px;
+    background: #e74c3c;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.logo-subtitle {
+    font-size: 18px;
+    color: #bdc3c7;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.main-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.review-icons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.review-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.review-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.tripadvisor-icon {
+    background: yellow;
+    color: white;
+}
+
+.tripadvisor-icon:hover {
+    background: #009973;
+}
+
+.google-icon {
+    background: white;
+    color: #4285f4;
+    position: relative;
+    overflow: hidden;
+}
+
+.google-g {
+    font-family: 'Product Sans', 'Roboto', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    background: linear-gradient(
+        45deg,
+        #4285f4 0%,
+        #34a853 25%,
+        #fbbc05 50%,
+        #ea4335 75%,
+        #4285f4 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 1;
+}
+
+.google-icon:hover {
+    background: #f8f9fa;
+    transform: scale(1.1);
+}
+
+.qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.qr-code {
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-image {
+    display: block;
+    border-radius: 8px;
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+
+/* HAND ICON STYLING - STYLISH & BOLD */
+.qr-section svg {
+    font-size: 60px;
+    color: #FFD700;
+    filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.4));
+    animation: pointingAnimation 1.5s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+.qr-section svg:hover {
+    font-size: 70px;
+    filter: drop-shadow(0 6px 12px rgba(255, 215, 0, 0.6));
+    color: #FFC700;
+}
+
+
+
+.qr-text {
+    font-size: 20px;
+    color: white;
+    font-weight: 600;
+    padding-bottom: 5px;
+}
+
+@media (max-width: 480px) {
+    .feedbac-card {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+    
+    .main-text {
+        font-size: 20px;
+    }
+    
+    .logo-text {
+        font-size: 28px;
+    }
+    
+    .review-icons {
+        gap: 15px;
+    }
+    
+    .review-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .google-g {
+        font-size: 24px;
+    }
+    
+    .qr-code {
+        width: 150px;
+        height: 150px;
+        padding: 15px;
+    }
+    
+    .qr-image {
+        width: 130px;
+        height: 130px;
+    }
+    
+    .qr-section svg {
+        font-size: 50px;
+    }
+    
+    .qr-section svg:hover {
+        font-size: 60px;
+    }
+}
+
+.google-icon-svg {
+    background: white;
+    color: white;
+}
+
+.google-icon-svg:hover {
+    background: #f8f9fa;
+}
