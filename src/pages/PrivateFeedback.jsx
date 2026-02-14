@@ -60,7 +60,7 @@ const PrivateFeedback = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/feedback', {
+      const response = await axios.post('https://qr-p-backend.vercel.app/api/feedback', {
         name: formData.name.trim(),
         email: formData.email.trim(),
         contact: formData.contact.trim(),
