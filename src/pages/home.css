@@ -153,7 +153,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 0.5px solid white;
+    border: 0.5px white;
 }
 
 .qr-image {
