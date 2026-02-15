@@ -75,8 +75,8 @@ const PrivateFeedback = () => {
     setSubmitCount(0);
 
     try {
-      // TODO: Replace with your actual Vercel backend URL
-      const API_URL = process.env.REACT_APP_API_URL || 'https://qr-p-backend.vercel.app/api/feedback';
+      // Use environment variable or fallback to production URL
+      const API_URL = process.env.REACT_APP_API_URL || 'https://warm-donut-backend.vercel.app/api/feedback';
       
       const response = await axios.post(API_URL, {
         name: formData.name.trim(),
