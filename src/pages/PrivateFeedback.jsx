@@ -13,6 +13,7 @@ const PrivateFeedback = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [submitCount, setSubmitCount] = useState(0);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,13 +26,26 @@ const PrivateFeedback = () => {
   };
 
   const handleRating = (star) => {
+    if (loading) return; // Prevent rating change during submission
     setFormData(prev => ({
       ...prev,
       rating: star
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    // Prevent form submission if triggered by Enter key
+    if (e) e.preventDefault();
+
+    // Prevent multiple submissions
+    if (loading) {
+      setSubmitCount(prev => prev + 1);
+      if (submitCount > 2) {
+        setError('Please wait, your request is being processed...');
+      }
+      return;
+    }
+
     // Validation
     if (!formData.name.trim()) {
       setError('Please enter your name');
@@ -58,15 +72,24 @@ const PrivateFeedback = () => {
 
     setLoading(true);
     setError('');
+    setSubmitCount(0);
 
     try {
-      const response = await axios.post('https://warm-donut-backend.vercel.app/api/feedback', {
+      // TODO: Replace with your actual Vercel backend URL
+      const API_URL = process.env.REACT_APP_API_URL || 'https://qr-p-backend.vercel.app/api/feedback';
+      
+      const response = await axios.post(API_URL, {
         name: formData.name.trim(),
         email: formData.email.trim(),
         contact: formData.contact.trim(),
         message: formData.message.trim(),
         rating: formData.rating,
         feedbackType: 'sad'
+      }, {
+        timeout: 10000, // 10 second timeout
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.data.success) {
@@ -75,12 +98,43 @@ const PrivateFeedback = () => {
       }
     } catch (err) {
       console.error('Error submitting feedback:', err);
-      setError(
-        err.response?.data?.message ||
-        'Failed to submit feedback. Please try again later.'
-      );
+      
+      // Handle different error types
+      if (err.response) {
+        // Server responded with error
+        const status = err.response.status;
+        const data = err.response.data;
+        
+        if (status === 429) {
+          // Rate limit error
+          const retryAfter = data.retryAfter || 60;
+          setError(`Too many requests. Please wait ${retryAfter} seconds and try again.`);
+        } else if (status === 400) {
+          // Validation error
+          setError(data.message || 'Please check your input and try again.');
+        } else if (status === 500) {
+          // Server error
+          setError('Server error. Please try again later.');
+        } else {
+          setError(data.message || 'Failed to submit feedback. Please try again.');
+        }
+      } else if (err.request) {
+        // Request made but no response
+        setError('Network error. Please check your internet connection and try again.');
+      } else {
+        // Something else happened
+        setError('Failed to submit feedback. Please try again later.');
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle Enter key press
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      handleSubmit(e);
     }
   };
 
@@ -93,14 +147,18 @@ const PrivateFeedback = () => {
       alignItems: 'center',
       padding: '20px'
     }}>
-      <div style={{
-        background: 'white',
-        borderRadius: '20px',
-        padding: '40px',
-        maxWidth: '500px',
-        width: '100%',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
-      }}>
+      <form 
+        onSubmit={handleSubmit}
+        onKeyPress={handleKeyPress}
+        style={{
+          background: 'white',
+          borderRadius: '20px',
+          padding: '40px',
+          maxWidth: '500px',
+          width: '100%',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+        }}
+      >
 
         {/* Sad Icon */}
         <div style={{
@@ -147,6 +205,7 @@ const PrivateFeedback = () => {
             onChange={handleChange}
             placeholder="Enter your name"
             disabled={loading}
+            required
             style={{
               width: '100%',
               padding: '10px',
@@ -172,6 +231,7 @@ const PrivateFeedback = () => {
             onChange={handleChange}
             placeholder="Enter your email"
             disabled={loading}
+            required
             style={{
               width: '100%',
               padding: '10px',
@@ -197,6 +257,7 @@ const PrivateFeedback = () => {
             onChange={handleChange}
             placeholder="Enter your contact number"
             disabled={loading}
+            required
             style={{
               width: '100%',
               padding: '10px',
@@ -219,7 +280,7 @@ const PrivateFeedback = () => {
             {[1, 2, 3, 4, 5].map((star) => (
               <span
                 key={star}
-                onClick={() => !loading && handleRating(star)}
+                onClick={() => handleRating(star)}
                 style={{
                   fontSize: '30px',
                   cursor: loading ? 'not-allowed' : 'pointer',
@@ -251,6 +312,7 @@ const PrivateFeedback = () => {
             onChange={handleChange}
             placeholder="Please describe your experience..."
             disabled={loading}
+            required
             style={{
               width: '100%',
               height: '100px',
@@ -269,7 +331,7 @@ const PrivateFeedback = () => {
 
         {/* Submit Button */}
         <button
-          onClick={handleSubmit}
+          type="submit"
           disabled={loading}
           style={{
             width: '100%',
@@ -308,7 +370,7 @@ const PrivateFeedback = () => {
         <div style={{ textAlign: 'center', fontSize: '12px', color: '#7f8c8d' }}>
           Powered by <span style={{ color: '#e74c3c', fontWeight: 'bold' }}>Xpress Inn</span>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
