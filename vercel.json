@@ -1,0 +1,8 @@
+{
+  "env": {
+    "REACT_APP_API_URL": "https://warm-donut-backend.vercel.app/api/feedback"
+  },
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "framework": "create-react-app"
+}
